@@ -10,19 +10,26 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'My First Flutter App!!!'),
+
+  theme: ThemeData(
+    // Define the default brightness and colors.
+    brightness: Brightness.dark,
+    primaryColor: Colors.lightBlue[800],
+    accentColor: Colors.cyan[600],
+    
+    // Define the default font family.
+    fontFamily: 'Montserrat',
+    
+    // Define the default TextTheme. Use this to specify the default
+    // text styling for headlines, titles, bodies of text, and more.
+    textTheme: TextTheme(
+      headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+      title: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+      body1: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+    ),
+  ),
+
+  home: MyHomePage(title: 'My First Flutter App!!!'),
     );
   }
 }
@@ -50,6 +57,11 @@ class _MyHomePageState extends State<MyHomePage> {
   double _height = 1.65;
   double _weight = 60;
 
+  double _w1 = 0;
+  double _w2 = 0;
+
+  Color _alertColor = Colors.green;
+
   final myHeight = TextEditingController();
   final myWeight = TextEditingController();
 
@@ -64,6 +76,18 @@ class _MyHomePageState extends State<MyHomePage> {
       _weight = double.parse(myWeight.text.trim());
 
       _imc = _weight / (pow(_height, 2));
+
+      _w1 = 18.5 * (pow(_height, 2));
+      _w2 = 24.9 * (pow(_height, 2));
+      
+      if(_imc <= 18.5 || _imc >= 30){
+        _alertColor = Colors.red;
+      } else if (_imc > 18.5 && _imc < 25) {
+        _alertColor = Colors.green;
+      } else {
+        _alertColor = Colors.orange;
+      }
+
       myHeight.clear();
       myWeight.clear();
 
@@ -85,6 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
+        
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
@@ -103,9 +128,9 @@ class _MyHomePageState extends State<MyHomePage> {
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
           
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Text('IMC - Calculator\n',
+            Text('IMC - Calculator',
               style: TextStyle(fontSize: 40),
             ),
 
@@ -114,14 +139,17 @@ class _MyHomePageState extends State<MyHomePage> {
               keyboardType: TextInputType.numberWithOptions(signed: false),
               textAlign: TextAlign.center,
               decoration: new InputDecoration(
+                fillColor: Colors.white,
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green, width: 3.0),
+                  borderSide: BorderSide(color: Colors.orange, width: 3.0),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black, width: 2.0),
+                  borderSide: BorderSide(color: Colors.white, width: 2.0),
                 ),
+                
                 hintText: 'Enter your height in cm.',
               ),
+              
             ),
 
             Text('\n'),
@@ -132,22 +160,31 @@ class _MyHomePageState extends State<MyHomePage> {
               textAlign: TextAlign.center,
               decoration: new InputDecoration(
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green, width: 3.0),
+                  borderSide: BorderSide(color: Colors.orange, width: 3.0),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black, width: 2.0),
+                  borderSide: BorderSide(color: Colors.white, width: 2.0),
                 ),
-                hintText: 'Enter your weigth in Kg.',
+                hintText: 'Enter your weigth in Kg',
               ),
             ),
 
             Text(
-              '\nYour IMC IS:',
+              '\nYour IMC is:',
               style: TextStyle(fontSize: 30),
             ),
             Text(
               _imc.toStringAsPrecision(3),
-              style: TextStyle(color: Colors.orange, fontSize: 40),
+              style: TextStyle(color: _alertColor, fontSize: 40),
+            ),
+
+            Text(
+              '\nYour weight ideal is:',
+              style: TextStyle(fontSize: 30),
+            ),
+            Text(
+              _w1.toStringAsPrecision(3) + ' to '+ _w2.toStringAsPrecision(3) + ' Kg!',
+              style: TextStyle(color: _alertColor, fontSize: 40),
             ),
 
           ],
